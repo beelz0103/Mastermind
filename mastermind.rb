@@ -49,11 +49,25 @@ class Game
   def start_game
     loop do
       arr = player_input
-      board.update_board(arr,[1,2,3],board.board,turn)
+      hint_arr = []
+      hint(arr,hint_arr)
+      board.update_board(arr,hint_arr,board.board,turn)
       board.print_board(board.board)
       break if board.win?(board.board, turn)
       puts turn
       self.turn += 1
+    end
+  end
+
+  def hint(arr, arr2)
+    board.solution.each_with_index do |element, index|
+      arr.each_with_index do |e,i|
+        if element == e && index == i
+          arr2 << "black"
+        elsif element == e
+          arr2 << "white"
+        end
+      end
     end
   end
 
