@@ -9,11 +9,6 @@ class Board
     @board = []
   end
 
-  def codemaker(code)
-    @solution = code.sample(4)
-    @solution = ["1", "1", "2", "2"]
-  end
-
   def win?(board,turn)
     board[turn - 1][0] == solution
   end
@@ -35,23 +30,85 @@ class Board
   end
 end
 
+class Players
+  attr_accessor :role
+
+  def initialize(role)
+    @role = role
+  end
+end
+
+
 class Game 
-  attr_accessor :board, :turn
+  attr_accessor :board, :turn, :player, :computer
 
   def initialize
     @board = Board.new
+    @player = nil
+    @computer = nil
     @turn = 1
   end
 
+  def other_role(role)
+    if role == 'Brekaer'
+      'Maker'
+    else 
+      'Breaker'
+    end
+  end
+
+
+  def game_set_up
+    puts "Choose: BREAKER OR MAKER"
+    role = gets.chomp    
+    @player = Players.new(role)
+    computer_role = other_role(role)
+    @computer = Players.new(computer_role)
+  end
+
+  def codemaker
+    if player.role == "maker"
+      puts "Input code"
+
+      solution5 = gets.chomp
+      board.solution = solution5.to_s.split("")    
+    else 
+      board.solution = board.code.sample(4)
+
+    end
+  end      
+
   def play
-    board.codemaker(board.code)
+    game_set_up
+    codemaker
     puts board.solution
     start_game
   end
 
   def start_game
+    if player.role == "maker"
+      computermethods
+    else
+      playermethods
+    end
+  end
+
+  def playermethods
     loop do
       arr = player_input
+      sol_arr = arr.dup
+      hint_arr = hint(sol_arr)
+      board.update_board(arr,hint_arr,board.board,turn)
+      board.print_board(board.board)
+      break if board.win?(board.board, turn)
+      puts turn
+      self.turn += 1
+    end
+  end
+
+  def computermethods
+    loop do
+      arr = computer_input(self.turn)
       sol_arr = arr.dup
       hint_arr = hint(sol_arr)
       board.update_board(arr,hint_arr,board.board,turn)
@@ -100,6 +157,10 @@ end
     input = gets.chomp.split("")
     return input
   end 
+
+  def computer_input(turn)
+    (turn + 1110).to_s.split("")    
+  end
 end
 
 game = Game.new
