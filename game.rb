@@ -47,7 +47,9 @@ class Game
 
   def play_game
     game_set_up
+    p board.solution
     play
+    conclusion
   end
 
   def play
@@ -60,7 +62,7 @@ class Game
   end
 
   def playerstuff(solution)
-    while turn < 13
+    while turn < 2
       print_turn
       input = HumanPlayer.code_input(board)
       hint_arr = player.get_hint(solution, input)
@@ -97,9 +99,9 @@ class Game
     end
   end
 
-  # THIS DOESNT WORK AS EXPECTED
   def conclusion
-    if board.win?(turn - 1)
+    p turn
+    if board.win?(turn)
       puts 'WON'
     else
       puts 'YOU WERENT ABLE TO GUEES'
