@@ -39,15 +39,14 @@ class Game
   def print_role(role)
     case role
     when 'Maker'
-      puts 'You chose to be the codemaker'
+      puts 'You chose to be the codemaker. computer will try to guess within 8 tries'
     when 'Breaker'
-      puts 'You chose to be the codebreaker'
+      puts 'You chose to be the codebreaker, try to guess within 8 tries'
     end
   end
 
   def play_game
     game_set_up
-    p board.solution
     play
     conclusion
   end
@@ -62,12 +61,12 @@ class Game
   end
 
   def playerstuff(solution)
-    while turn < 2
+    while turn < 9
       print_turn
       input = HumanPlayer.code_input(board)
       hint_arr = player.get_hint(solution, input)
       board.update_and_print_board(input, hint_arr, turn)
-      break if board.win?(turn)
+      break if board.win?(turn) || turn == 8
 
       self.turn += 1
     end
@@ -100,11 +99,10 @@ class Game
   end
 
   def conclusion
-    p turn
     if board.win?(turn)
       puts 'WON'
     else
-      puts 'YOU WERENT ABLE TO GUEES'
+      puts "YOU WERENT ABLE TO GUESS, CORRECT ANSWER WAS #{board.solution}"
     end
   end
 end
